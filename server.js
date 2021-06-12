@@ -49,6 +49,18 @@ app.post("/api/shorturl", function (req, res) {
   res.json({ original_url: address.originalUrl, short_url: address.shortUrl });
 });
 
+app.get("/api/shorturl/:shorturl", async (req, res) => {
+  const { shorturl } = req.params;
+
+  const address = await Address.findOne({ shortUrl: shorturl });
+
+  if (!address) {
+    res.json({ error: "No short URL found for the given input" });
+  }
+
+  res.redirect(address.originalUrl);
+});
+
 mongoose.connect(
   process.env.DB_URI,
   {
