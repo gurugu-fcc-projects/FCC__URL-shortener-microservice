@@ -1,6 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const dns = require("dns");
+const url = require("url");
+
 const app = express();
 
 // Basic Configuration
