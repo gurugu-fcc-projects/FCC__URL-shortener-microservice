@@ -31,29 +31,22 @@ app.post("/api/shorturl", function (req, res) {
     return res.json({ error: "invalid url" });
   }
 
-  const { protocol, hostname, origin } = myURL;
-  console.log("url:", url);
-  // console.log('myURL:', myURL)
-  // console.log('protocol:', protocol)
+  const { protocol } = myURL;
 
   if (protocol !== "http:" && protocol !== "https:") {
     return res.json({ error: "invalid url" });
   }
 
-  // dns.lookup(origin, (err, address, family) => {
-  //   if (err) return res.json({ error: 'invalid url' });
-  // })
+  const docsCount = await Address.estimatedDocumentCount();
 
-  Address.findOne({ originalUrl: url }, (err, data) => {
-    console.log("i am here");
-    if (err) {
-      console.log("Error:", err);
-    } else {
-      console.log("Data:", data);
-    }
-  });
+  let address = await Address.findOne({ originalUrl: url });
 
-  return res.json({ greeting: "hello API" });
+  if (!address) {
+    address = new Address({ originalUrl: url, shortUrl: docsCount + 1 });
+    await address.save();
+  }
+
+  res.json({ original_url: address.originalUrl, short_url: address.shortUrl });
 });
 
 mongoose.connect(
