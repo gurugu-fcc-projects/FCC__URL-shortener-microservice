@@ -23,16 +23,35 @@ app.get("/", function (req, res) {
 // Your first API endpoint
 app.post("/api/shorturl", function (req, res) {
   const { url } = req.body;
-  const myURL = new URL(url);
-  const { protocol, hostname } = myURL;
+  let myURL;
 
-  dns.lookup(hostname, (err, address, family) => {
-    if (err) return res.json({ error: "invalid url" });
-  });
-
-  if (protocol !== "http" || protocol !== "https") {
+  try {
+    myURL = new URL(url);
+  } catch {
     return res.json({ error: "invalid url" });
   }
+
+  const { protocol, hostname, origin } = myURL;
+  console.log("url:", url);
+  // console.log('myURL:', myURL)
+  // console.log('protocol:', protocol)
+
+  if (protocol !== "http:" && protocol !== "https:") {
+    return res.json({ error: "invalid url" });
+  }
+
+  // dns.lookup(origin, (err, address, family) => {
+  //   if (err) return res.json({ error: 'invalid url' });
+  // })
+
+  Address.findOne({ originalUrl: url }, (err, data) => {
+    console.log("i am here");
+    if (err) {
+      console.log("Error:", err);
+    } else {
+      console.log("Data:", data);
+    }
+  });
 
   return res.json({ greeting: "hello API" });
 });
