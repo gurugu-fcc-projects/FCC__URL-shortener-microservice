@@ -22,6 +22,16 @@ app.get("/", function (req, res) {
 // Your first API endpoint
 app.post("/api/shorturl", function (req, res) {
   const { url } = req.body;
+  const myURL = new URL(url);
+  const { protocol, hostname } = myURL;
+
+  dns.lookup(hostname, (err, address, family) => {
+    if (err) res.json({ error: "invalid url" });
+  });
+
+  if (protocol !== "http" || protocol !== "https") {
+    res.json({ error: "invalid url" });
+  }
 
   res.json({ greeting: "hello API" });
 });
