@@ -37,6 +37,19 @@ app.post("/api/shorturl", function (req, res) {
   return res.json({ greeting: "hello API" });
 });
 
-app.listen(port, function () {
-  console.log(`Listening on port ${port}`);
-});
+mongoose.connect(
+  process.env.DB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  err => {
+    if (err) {
+      console.log(err);
+    } else {
+      app.listen(port, function () {
+        console.log(`Listening on port ${port}`);
+      });
+    }
+  }
+);
