@@ -26,14 +26,14 @@ app.post("/api/shorturl", function (req, res) {
   const { protocol, hostname } = myURL;
 
   dns.lookup(hostname, (err, address, family) => {
-    if (err) res.json({ error: "invalid url" });
+    if (err) return res.json({ error: "invalid url" });
   });
 
   if (protocol !== "http" || protocol !== "https") {
-    res.json({ error: "invalid url" });
+    return res.json({ error: "invalid url" });
   }
 
-  res.json({ greeting: "hello API" });
+  return res.json({ greeting: "hello API" });
 });
 
 app.listen(port, function () {
